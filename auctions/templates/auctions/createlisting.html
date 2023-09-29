@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Create Listing</h2>
+
+    <form action="{% url 'createlisting' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="category">Category: </label>
+            <select aria-label="Default select example" name="category" id="category">
+                {% for item in categories %}
+                <option selected>{{item}}</option>
+                {% endfor %}
+              </select>
+        </div>
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" name="title" placeholder="Listing title">
+          <small class="form-text text-muted">A unique title for your listing.</small>
+        </div>
+        <div class="form-group">
+          <label for="price">Starting bid:</label>
+          <input type="number" class="form-control" name="price" placeholder="Listing price">
+          <small class="form-text text-muted">Price in USD.</small>
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea class="form-control" name="description" rows="3"></textarea>
+          <small class="form-text text-muted">Briefly describe your listing.</small>
+        </div>
+        <div class="form-group">
+          <label for="year">Year</label>
+          <input type="number" class="form-control" name="year" placeholder="Manufacturing year">
+          <small class="form-text text-muted">Manufacturing year.</small>
+        </div>
+        <div class="form-group">
+          <label for="imageurl">Image</label>
+          <input type="text" class="form-control" name="imageurl" placeholder="Image URL">
+          <small class="form-text text-muted">A unique image of your listing.</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+
+{% endblock %}
