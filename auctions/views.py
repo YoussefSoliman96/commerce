@@ -3,12 +3,18 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+import datetime
 
 from .models import User, Category, AuctionListing
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listings = AuctionListing.objects.filter(active=True)
+    categories = Category.objects.all()
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+        "categories": categories        
+    })
 
 
 def login_view(request):
@@ -77,6 +83,7 @@ def createListing(request):
         description = request.POST['description']
         year = request.POST['year']
         image = request.POST['imageurl']
+        time = datetime.datetime.now()
         
         # Select the user
         user = request.user
@@ -90,6 +97,26 @@ def createListing(request):
             year = year,
             imageUrl = image,
             owner = user,
+            created_at = time,
         )
         newListing.save()
         return HttpResponseRedirect(reverse(index))
+    
+def categoryItems(request):
+    if request.method == "POST":
+        categoryName = request.POST['category']
+        category = Category.objects.get(title=categoryName)
+        listings = AuctionListing.objects.filter(active=True, category=category)
+        categories = Category.objects.all()
+        return render(request, "auctions/index.html", {
+            "listings": listings,
+            "categories": categories        
+        })
+        
+def item(request, name, id):
+    if request.method == "GET":
+        listing = AuctionListing.objects.get(title=name, pk=id)
+        return render(request, "auctions/item.html", {
+            "listing": listing
+        })
+    
