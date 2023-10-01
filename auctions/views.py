@@ -114,9 +114,28 @@ def categoryItems(request):
         })
         
 def item(request, name, id):
-    if request.method == "GET":
-        listing = AuctionListing.objects.get(title=name, pk=id)
-        return render(request, "auctions/item.html", {
-            "listing": listing
-        })
+    listing = AuctionListing.objects.get(title=name, pk=id)
+    watchlistStatus = request.user in listing.watchlist.all()
+    return render(request, "auctions/item.html", {
+        "listing": listing,
+        "watchlistStatus": watchlistStatus
+    })
+        
+def watchlistRemoved(request, name, id):
+    listing = AuctionListing.objects.get(title=name, pk=id)
+    user = request.user
+    listing.watchlist.remove(user)
+    return HttpResponseRedirect(reverse("item", args=(name, id, )))
     
+def watchlistAdded(request, name, id):
+    listing = AuctionListing.objects.get(title=name, pk=id)
+    user = request.user
+    listing.watchlist.add(user) 
+    return HttpResponseRedirect(reverse("item", args=(name, id, )))
+
+def watchlist(request):
+    user = request.user
+    itemWatchlist = user.userWatchlist.all()
+    return render(request, "auctions/watchlist.html", {
+        "listings": itemWatchlist,
+    })

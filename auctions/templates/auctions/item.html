@@ -12,8 +12,26 @@
               <p class="card-text" style="height: 15rem;">{{ listing.description }}</p>             
               <h5 class="card-title">Price: ${{ listing.price }}</h5>
               <p class="card-subtitle mb-2 text-muted" style="font-size: 15px;">Created {{ listing.created_at}} </p>
+              <div class="row mx-3">
+                {% if user.is_authenticated %}
+                  {% if watchlistStatus %}
+                  <form action="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" method="POST">
+                    {% csrf_token %}
+                    
+                    <a href="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" type="submit">Remove from Watchlist</a>
+                  </form>
+                  {% else %}
+                  <form action="{% url 'watchlistAdded' name=listing.title id=listing.id %}" method="POST">
+                    {% csrf_token %}
+                    
+                    <a href="{% url 'watchlistAdded' name=listing.title id=listing.id %}" type="submit">Add to Watchlist</a>
+                  </form>
+                  {% endif %}
+                {% endif %}
+              </div>
             </div>
           </div>
+          
           
     </div>
     

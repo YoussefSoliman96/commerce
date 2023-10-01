@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+    <div class="row mx-3">
+        {% for listing in listings %}        
+        <div class="card mx-3" style="width: 18rem;">
+            <img class="card-img-top" src="{{ listing.imageUrl }}" alt="Plane image" height="250px">
+            <div class="card-body">
+              <h5 class="card-title" style="height: 50px;">{{ listing.title }}</h5>
+              <p class="card-text" style="height: 15rem;">{{ listing.description }}</p>
+              <div style="margin-bottom: 10px;">
+                <h5 class="card-title">Price: ${{ listing.price }}</h5>
+                <p class="card-subtitle mb-2 text-muted" style="font-size: 15px;">Created {{ listing.created_at}} </p>
+                <a href="{% url 'item' name=listing.title id=listing.id %}" class="card-link" style="display: flex; justify-content: center; text-align:center;">See more</a>
+              </div>                     
+            </div>
+          </div>
+          {% endfor %}
+    </div>
+    
+    
+{% endblock %}
+
