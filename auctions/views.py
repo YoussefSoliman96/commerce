@@ -115,7 +115,9 @@ def categoryItems(request):
             categoryName = request.POST['category']
             category = Category.objects.get(title=categoryName)
         except:
+            listings = AuctionListing.objects.all()
             return render(request, "auctions/index.html", {
+            "listings": listings,
             "categories": categories        
         })
             
@@ -125,6 +127,14 @@ def categoryItems(request):
             "categories": categories        
         })
         
+def allCategoryItems(request):
+    listings = AuctionListing.objects.all()
+    categories = Category.objects.all()
+    return render(request, "auctions/all.html", {
+        "listings": listings,
+        "categories": categories        
+    })
+
 def item(request, name, id):
     listing = AuctionListing.objects.get(title=name, pk=id)
     watchlistStatus = request.user in listing.watchlist.all()
@@ -146,7 +156,11 @@ def watchlistRemoved(request, name, id):
     listing = AuctionListing.objects.get(title=name, pk=id)
     user = request.user
     listing.watchlist.remove(user)
-    return HttpResponseRedirect(reverse("item", args=(name, id, )))
+    itemWatchlist = user.userWatchlist.all()
+    return render(request, "auctions/watchlist.html", {
+        "listings": itemWatchlist,
+        "watchListItemRemoved": f"{listing} removed from Watchlist"
+    })
     
 def watchlistAdded(request, name, id):
     listing = AuctionListing.objects.get(title=name, pk=id)
@@ -232,4 +246,48 @@ def closeAuction(request, id, name):
             "comments":listingComments,
             "itemOwner": itemOwner,
             "auctionClosedMessage": "Auction closed successfully!"           
+            })
+    
+def repost(request, id, name):
+    listing = AuctionListing.objects.get(title=name, pk=id)
+    watchlistStatus = request.user in listing.watchlist.all()
+    listingComments = Comment.objects.filter(item=listing) 
+    listing.active = True
+    listing.save()
+    owner = listing.owner
+    currentUser = request.user
+    if owner.username == currentUser.username:
+        itemOwner = True
+    else:
+        itemOwner = False
+    return render(request, "auctions/item.html", {
+            "listing":listing,
+            "status": "success",
+            "watchlistStatus": watchlistStatus,
+            "comments":listingComments,
+            "itemOwner": itemOwner,
+            "auctionClosedMessage": "Auction reposted successfully!"           
+            })
+    
+def allCategories(request):
+    categories = Category.objects.all()
+    if request.method == "POST":
+        try:
+            categoryName = request.POST['category']
+            category = Category.objects.get(title=categoryName)
+        except:
+            listings = AuctionListing.objects.all()
+            return render(request, "auctions/index.html", {
+            "listings": listings,
+            "categories": categories        
+        })
+            
+        listings = AuctionListing.objects.filter(active=True, category=category)
+        return render(request, "auctions/index.html", {
+            "listings": listings,
+            "categories": categories        
+        })
+    else:
+        return render(request, "auctions/allCategories.html", {
+            "categories": categories   
             })

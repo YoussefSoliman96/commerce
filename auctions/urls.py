@@ -9,6 +9,7 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("createlisting", views.createListing, name="createlisting"),
     path("categoryitems", views.categoryItems, name="categoryitems"),
+    path("allCategoryItems", views.allCategoryItems, name="allCategoryItems"),
     path("item/<str:name>&<int:id>", views.item, name="item"),
     path("watchlistRemoved/<str:name>&<int:id>", views.watchlistRemoved, name="watchlistRemoved"),
     path("watchlistAdded/<str:name>&<int:id>", views.watchlistAdded, name="watchlistAdded"),
@@ -16,4 +17,6 @@ urlpatterns = [
     path("comment/<str:name>&<int:id>", views.comment, name="comment"),
     path("bid/<str:name>&<int:id>", views.bid, name="bid"),
     path("closeAuction/<str:name>&<int:id>", views.closeAuction, name="closeAuction"),
+    path("repost/<str:name>&<int:id>", views.repost, name="repost"),
+    path("allCategories", views.allCategories, name="allCategories"),
 ]   

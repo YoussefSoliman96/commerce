@@ -1,7 +1,12 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Watchlist</h2>
+    <h2 class="jumbotron" style="height: 200px;">Watchlist</h2>
+    {% if watchListItemRemoved %}
+      <div class="alert alert-danger" role="alert">
+        {{ watchListItemRemoved }}
+    {% endif %}
+      </div>
     <div class="row mx-3">
         {% for listing in listings %}        
         <div class="card mx-3" style="width: 18rem;">
@@ -12,7 +17,15 @@
               <div style="margin-bottom: 10px;">
                 <h5 class="card-title">Price: ${{ listing.price.bid }}</h5>
                 <p class="card-subtitle mb-2 text-muted" style="font-size: 15px;">Created {{ listing.created_at}} </p>
-                <a href="{% url 'item' name=listing.title id=listing.id %}" class="card-link" style="display: flex; justify-content: center; text-align:center;">See more</a>
+                <div class="row mx-3 d-flex justify-content-center">
+                  <a href="{% url 'item' name=listing.title id=listing.id %}" class="card-link" style="display: flex; justify-content: center; text-align:center;">See more</a>
+                  {% if user.is_authenticated %}                
+                    <form action="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" method="POST">
+                      {% csrf_token %}                   
+                       <button type="submit" class="btn btn-danger my-3" >Remove from Watchlist</button>
+                    </form>
+                  {% endif %}
+                </div>              
               </div>                     
             </div>
           </div>

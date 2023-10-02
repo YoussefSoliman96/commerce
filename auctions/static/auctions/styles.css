@@ -1,3 +1,18 @@
 body {
-    padding: 10px;
+    flex-grow: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.nav-link:hover {
+    color: black !important; 
+}
+
+.form-control {
+    width: 500px;
+}
+footer {
+    margin-top: auto;
 }

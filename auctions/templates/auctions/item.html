@@ -19,6 +19,7 @@
             </div>
             {% endif %}
           {% endif %}
+          
           <img class="card-img-top" src="{{ listing.imageUrl }}" alt="Plane image" height="500px">
           <div class="card-body">
             <h5 class="card-title">{{ listing.title }}</h5>
@@ -34,6 +35,15 @@
               <button type="submit" class="btn btn-danger my-2">Close Auction</button>
               </form>
               {% endif %}
+
+              {% if itemOwner == True and listing.active == False %}
+              <form action="{% url 'repost' name=listing.title id=listing.id %}" method="POST">
+                {% csrf_token %}
+                
+              <button type="submit" class="btn btn-success my-2">Repost Auction</button>
+              </form>
+              {% endif %}
+              
               <form action="{% url 'bid' name=listing.title id=listing.id %}" method="POST">
                 {% csrf_token %}
                 <input type="number" name="bid" min="0" placeholder="Bid on this item!">
@@ -59,13 +69,13 @@
                 <form action="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" method="POST">
                   {% csrf_token %}
                   
-                  <a href="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" type="submit">Remove from Watchlist</a>
+                  <a href="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" type="submit" style="text-decoration: none;">Remove from Watchlist</a>
                 </form>
                 {% else %}
                 <form action="{% url 'watchlistAdded' name=listing.title id=listing.id %}" method="POST">
                   {% csrf_token %}
                   
-                  <a href="{% url 'watchlistAdded' name=listing.title id=listing.id %}" type="submit">Add to Watchlist</a>
+                  <a href="{% url 'watchlistAdded' name=listing.title id=listing.id %}" type="submit" style="text-decoration: none;" >Add to Watchlist</a>
                 </form>
                 {% endif %}
               {% endif %}

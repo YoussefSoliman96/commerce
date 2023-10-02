@@ -2,11 +2,11 @@
 
 {% block body %}
     <div class="jumbotron" style="height: 200px;">
-      <h2>Active Listings</h2>
+      <h2>All Listings</h2>
       <form action="{% url 'categoryitems' %}" method="POST" class="my-4">
           {% csrf_token %}
           <select aria-label="Default select example" name="category" id="category">
-              <option value="none" selected disabled hidden>Select plane type</option>
+              <option value="none" selected disabled hidden>Select plane type</option>  
               <option>All</option>  
               {% for item in categories %}
               <option>{{item}}</option>
@@ -14,8 +14,7 @@
             </select>
             <button class="btn btn-primary" type="submit">Filter</button>
       </form>
-    </div>   
-
+    </div>
     <div class="row mx-3 justify-content-center" >
         {% for listing in listings %}        
         <div class="card mx-3" style="width: 18rem;">
