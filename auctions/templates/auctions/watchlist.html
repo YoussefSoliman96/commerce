@@ -10,7 +10,7 @@
               <h5 class="card-title" style="height: 50px;">{{ listing.title }}</h5>
               <p class="card-text" style="height: 15rem;">{{ listing.description }}</p>
               <div style="margin-bottom: 10px;">
-                <h5 class="card-title">Price: ${{ listing.price }}</h5>
+                <h5 class="card-title">Price: ${{ listing.price.bid }}</h5>
                 <p class="card-subtitle mb-2 text-muted" style="font-size: 15px;">Created {{ listing.created_at}} </p>
                 <a href="{% url 'item' name=listing.title id=listing.id %}" class="card-link" style="display: flex; justify-content: center; text-align:center;">See more</a>
               </div>                     
