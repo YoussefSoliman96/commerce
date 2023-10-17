@@ -4,102 +4,104 @@
 
   <div class="row mx-3 d-flex justify-content-center">
             
-      <div style="width: 50rem; ">
-          {% if user.is_authenticated%}
-            {% if listing.price.user == user and listing.active == False %}
-            <div class="alert alert-success" role="alert">
-              You've won the Auction!
-            </div>
-            {% endif %}
+    <div style="width: 50rem; ">
+        {% if user.is_authenticated%}
+          {% if listing.price.user == user and listing.active == False %}
+          <div class="alert alert-success" role="alert">
+            You've won the Auction!
+          </div>
           {% endif %}
-          {% if auctionClosedMessage %}
+        {% endif %}
+        {% if auctionClosedMessage %}
+          {% if status == "success" %}
+          <div class="alert alert-success" role="alert">
+            {{ auctionClosedMessage }}
+          </div>
+          {% endif %}
+        {% endif %}
+        
+        <img class="card-img-top" src="{{ listing.imageUrl }}" alt="Plane image" height="500px">
+        <div class="card-body">
+          <h5 class="card-title">{{ listing.title }}</h5>
+          <h5>Seller: {{ listing.owner }}</h5>
+          <p class="card-text" style="height: 10rem;">{{ listing.description }}</p>             
+          <h5 class="card-title">Price: ${{ listing.price.bid }}</h5>
+          <p class="card-subtitle mb-2 text-muted" style="font-size: 15px;">Created {{ listing.created_at}} </p>
+          {% if user.is_authenticated%}
+            {% if itemOwner == True and listing.active == True %}
+            <form action="{% url 'closeAuction' name=listing.title id=listing.id %}" method="POST">
+              {% csrf_token %}
+              
+            <button type="submit" class="btn btn-danger my-2">Close Auction</button>
+            </form>
+            {% endif %}
+
+            {% if itemOwner == True and listing.active == False %}
+            <form action="{% url 'repost' name=listing.title id=listing.id %}" method="POST">
+              {% csrf_token %}
+              
+            <button type="submit" class="btn btn-success my-2">Repost Auction</button>
+            </form>
+            {% endif %}
+            
+            <form action="{% url 'bid' name=listing.title id=listing.id %}" method="POST">
+              {% csrf_token %}
+              <input type="number" name="bid" min="0" placeholder="Bid on this item!">
+              <button type="submit" class="btn btn-light my-2">Bid</button>
+            </form>
+          {% endif %}
+          {% if alert %}
             {% if status == "success" %}
             <div class="alert alert-success" role="alert">
-              {{ auctionClosedMessage }}
+              {{ alert }}
+            </div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+              {{ alert }}
             </div>
             {% endif %}
           {% endif %}
           
-          <img class="card-img-top" src="{{ listing.imageUrl }}" alt="Plane image" height="500px">
-          <div class="card-body">
-            <h5 class="card-title">{{ listing.title }}</h5>
-            <h5>Seller: {{ listing.owner }}</h5>
-            <p class="card-text" style="height: 10rem;">{{ listing.description }}</p>             
-            <h5 class="card-title">Price: ${{ listing.price.bid }}</h5>
-            <p class="card-subtitle mb-2 text-muted" style="font-size: 15px;">Created {{ listing.created_at}} </p>
-            {% if user.is_authenticated%}
-              {% if itemOwner == True and listing.active == True %}
-              <form action="{% url 'closeAuction' name=listing.title id=listing.id %}" method="POST">
-                {% csrf_token %}
-                
-              <button type="submit" class="btn btn-danger my-2">Close Auction</button>
-              </form>
-              {% endif %}
-
-              {% if itemOwner == True and listing.active == False %}
-              <form action="{% url 'repost' name=listing.title id=listing.id %}" method="POST">
-                {% csrf_token %}
-                
-              <button type="submit" class="btn btn-success my-2">Repost Auction</button>
-              </form>
-              {% endif %}
+          <div class="row mx-1">
+            {% if user.is_authenticated %}
               
-              <form action="{% url 'bid' name=listing.title id=listing.id %}" method="POST">
+              {% if watchlistStatus %}
+              <form action="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" method="POST">
                 {% csrf_token %}
-                <input type="number" name="bid" min="0" placeholder="Bid on this item!">
-                <button type="submit" class="btn btn-light my-2">Bid</button>
+                
+                <a href="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" type="submit" style="text-decoration: none;">Remove from Watchlist</a>
               </form>
-            {% endif %}
-            {% if alert %}
-              {% if status == "success" %}
-              <div class="alert alert-success" role="alert">
-                {{ alert }}
-              </div>
               {% else %}
-              <div class="alert alert-danger" role="alert">
-                {{ alert }}
-              </div>
+              <form action="{% url 'watchlistAdded' name=listing.title id=listing.id %}" method="POST">
+                {% csrf_token %}
+                
+                <a href="{% url 'watchlistAdded' name=listing.title id=listing.id %}" type="submit" style="text-decoration: none;" >Add to Watchlist</a>
+              </form>
               {% endif %}
             {% endif %}
-            
-            <div class="row mx-1">
-              {% if user.is_authenticated %}
-                
-                {% if watchlistStatus %}
-                <form action="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" method="POST">
-                  {% csrf_token %}
-                  
-                  <a href="{% url 'watchlistRemoved' name=listing.title id=listing.id %}" type="submit" style="text-decoration: none;">Remove from Watchlist</a>
-                </form>
-                {% else %}
-                <form action="{% url 'watchlistAdded' name=listing.title id=listing.id %}" method="POST">
-                  {% csrf_token %}
-                  
-                  <a href="{% url 'watchlistAdded' name=listing.title id=listing.id %}" type="submit" style="text-decoration: none;" >Add to Watchlist</a>
-                </form>
-                {% endif %}
-              {% endif %}
+          </div>
+          <div class="my-4">
+            <h3>Comments</h3>
+            <div>
+              <form action="{% url 'comment' name=listing.title id=listing.id %}" method="POST">
+                {% csrf_token %}
+                <input type="text" name="comment" placeholder="comment on this item">
+                <button type="submit" class="btn btn-light">Submit comment</button>
+              </form>
             </div>
-            <div class="my-4">
-              <h3>Comments</h3>
-              <div>
-                <form action="{% url 'comment' name=listing.title id=listing.id %}" method="POST">
-                  {% csrf_token %}
-                  <input type="text" name="comment" placeholder="comment on this item">
-                  <button type="submit" class="btn btn-light">Submit comment</button>
-                </form>
-              </div>
-              <div>
-                <ul class="list-group list-group-flush">
-                  {% for comment in comments %}
-                  <li class="list-group-item">{{ comment.listingComment }} 
-                    <br>
-                    <p class="text-info" style="font-size: 12px; display: inline; font-weight: bold;">{{ comment.writer }} </p> 
-                    <span class="card-subtitle mb-2 text-muted" style="font-size: 12px; display: inline;">at {{ comment.created_at }}</span> 
-                  </li>   
-                  {% endfor %}
-                </ul>
-              </div>
-              
+            <div>
+              <ul class="list-group list-group-flush">
+                {% for comment in comments %}
+                <li class="list-group-item">{{ comment.listingComment }} 
+                  <br>
+                  <p class="text-info" style="font-size: 12px; display: inline; font-weight: bold;">{{ comment.writer }} </p> 
+                  <span class="card-subtitle mb-2 text-muted" style="font-size: 12px; display: inline;">at {{ comment.created_at }}</span> 
+                </li>   
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        </div>
   </div>
 {% endblock %}

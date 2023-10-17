@@ -16,3 +16,18 @@ body {
 footer {
     margin-top: auto;
 }
+
+.center {
+    margin: auto;
+    width: 50%;
+    border: 3px solid green;
+    padding: 10px;
+  }
+
+.read {
+    background-color: lightgrey;
+}
+
+.unread {
+    background-color: white;
+}
